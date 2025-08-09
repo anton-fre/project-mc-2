@@ -1,1 +1,11 @@
 project_id = "hqsvllpakgyrwsdulukd"
+
+[functions.send-share-email]
+verify_jwt = true
+
+[functions.summarize-document]
+verify_jwt = false
+
+[functions.translate-document]
+verify_jwt = false
+

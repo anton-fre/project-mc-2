@@ -9,7 +9,7 @@ const Table = React.forwardRef<
   <div className="relative w-full overflow-auto">
     <table
       ref={ref}
-      className={cn("w-full caption-bottom text-sm", className)}
+      className={cn("w-full caption-bottom text-sm table-fixed", className)}
       {...props}
     />
   </div>
@@ -69,16 +69,62 @@ TableRow.displayName = "TableRow"
 const TableHead = React.forwardRef<
   HTMLTableCellElement,
   React.ThHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
-  <th
-    ref={ref}
-    className={cn(
-      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, children, ...props }, ref) => {
+  const localRef = React.useRef<HTMLTableCellElement>(null)
+
+  const setRefs = (node: HTMLTableCellElement | null) => {
+    ;(localRef as any).current = node
+    if (typeof ref === "function") ref(node)
+    else if (ref) (ref as React.MutableRefObject<HTMLTableCellElement | null>).current = node
+  }
+
+  const onMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const th = localRef.current
+    if (!th) return
+    const startX = e.clientX
+    const startWidth = th.offsetWidth
+    const minWidth = 80
+
+    const onMove = (ev: MouseEvent) => {
+      const dx = ev.clientX - startX
+      const newWidth = Math.max(minWidth, startWidth + dx)
+      th.style.width = `${newWidth}px`
+      th.style.minWidth = `${newWidth}px`
+    }
+
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove)
+      window.removeEventListener("mouseup", onUp)
+      document.body.style.userSelect = ""
+      document.body.style.cursor = ""
+    }
+
+    window.addEventListener("mousemove", onMove)
+    window.addEventListener("mouseup", onUp)
+    document.body.style.userSelect = "none"
+    document.body.style.cursor = "col-resize"
+  }
+
+  return (
+    <th
+      ref={setRefs}
+      className={cn(
+        "relative group h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <span
+        onMouseDown={onMouseDown}
+        className="absolute right-0 top-0 h-full w-3 cursor-col-resize select-none z-10 opacity-0 transition-opacity group-hover:opacity-100"
+        aria-hidden="true"
+      />
+    </th>
+  )
+})
 TableHead.displayName = "TableHead"
 
 const TableCell = React.forwardRef<

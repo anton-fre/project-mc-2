@@ -14,6 +14,124 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointment_files: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          file_name: string
+          id: string
+          storage_object_path: string
+          user_id: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          file_name: string
+          id?: string
+          storage_object_path: string
+          user_id: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          file_name?: string
+          id?: string
+          storage_object_path?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointment_files_appointment_fk"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      appointments: {
+        Row: {
+          all_day: boolean
+          created_at: string
+          end_at: string
+          id: string
+          notes: string | null
+          patient_id: string | null
+          start_at: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          all_day?: boolean
+          created_at?: string
+          end_at: string
+          id?: string
+          notes?: string | null
+          patient_id?: string | null
+          start_at: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          all_day?: boolean
+          created_at?: string
+          end_at?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string | null
+          start_at?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_patient_fk"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_documents: {
+        Row: {
+          created_at: string
+          file_name: string
+          file_path: string
+          id: string
+          ocr_text: string | null
+          patient_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          file_path: string
+          id?: string
+          ocr_text?: string | null
+          patient_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          ocr_text?: string | null
+          patient_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       folders: {
         Row: {
           created_at: string
@@ -21,6 +139,7 @@ export type Database = {
           id: string
           name: string
           parent_id: string | null
+          patient_id: string | null
           user_id: string
         }
         Insert: {
@@ -29,6 +148,7 @@ export type Database = {
           id?: string
           name: string
           parent_id?: string | null
+          patient_id?: string | null
           user_id: string
         }
         Update: {
@@ -37,6 +157,7 @@ export type Database = {
           id?: string
           name?: string
           parent_id?: string | null
+          patient_id?: string | null
           user_id?: string
         }
         Relationships: [
@@ -47,7 +168,187 @@ export type Database = {
             referencedRelation: "folders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "folders_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      openai_vector_stores: {
+        Row: {
+          created_at: string
+          id: string
+          store_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          store_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          store_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      patients: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      question_appointments: {
+        Row: {
+          appointment_id: string
+          created_at: string
+          id: string
+          question_id: string
+          user_id: string
+        }
+        Insert: {
+          appointment_id: string
+          created_at?: string
+          id?: string
+          question_id: string
+          user_id: string
+        }
+        Update: {
+          appointment_id?: string
+          created_at?: string
+          id?: string
+          question_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      question_files: {
+        Row: {
+          created_at: string
+          file_name: string
+          id: string
+          question_id: string
+          storage_object_path: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          id?: string
+          question_id: string
+          storage_object_path: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          id?: string
+          question_id?: string
+          storage_object_path?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          patient_id: string | null
+          priority: number
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          patient_id?: string | null
+          priority?: number
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          patient_id?: string | null
+          priority?: number
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shares: {
+        Row: {
+          created_at: string
+          file_name: string
+          id: string
+          owner_user_id: string
+          path: string
+          patient_id: string | null
+          target_email: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          id?: string
+          owner_user_id: string
+          path: string
+          patient_id?: string | null
+          target_email: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          id?: string
+          owner_user_id?: string
+          path?: string
+          patient_id?: string | null
+          target_email?: string
+        }
+        Relationships: []
       }
     }
     Views: {

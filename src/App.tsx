@@ -10,26 +10,84 @@ import Index from "./pages/Index";
 import Appointments from "./pages/Appointments";
 import Questions from "./pages/Questions";
 import Notes from "./pages/Notes";
+import ProtectedRoute from "./components/ProtectedRoute";
+import DigitalizeDocumentation from "./pages/DigitalizeDocumentation";
+import Patients from "./pages/Patients";
+import { PatientProvider } from "./context/PatientContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/files" element={<Files />} />
-          <Route path="/appointments" element={<Appointments />} />
-          <Route path="/questions" element={<Questions />} />
-          <Route path="/notes" element={<Notes />} />
-          <Route path="/auth" element={<Auth />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <PatientProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/files"
+              element={
+                <ProtectedRoute>
+                  <Files />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/patients"
+              element={
+                <ProtectedRoute>
+                  <Patients />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/appointments"
+              element={
+                <ProtectedRoute>
+                  <Appointments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/questions"
+              element={
+                <ProtectedRoute>
+                  <Questions />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notes"
+              element={
+                <ProtectedRoute>
+                  <Notes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/digitalize-documentation"
+              element={
+                <ProtectedRoute>
+                  <DigitalizeDocumentation />
+                </ProtectedRoute>
+              }
+            />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </PatientProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
